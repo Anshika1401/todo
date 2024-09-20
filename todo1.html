@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-image: url('https://media.istockphoto.com/id/1319460145/vector/vibrant-rustic-orange-yellow-coloured-grunge-textured-empty-and-blank-vector-backgrounds.jpg?s=612x612&w=0&k=20&c=xypAC01NFKjkWzyEme4qwtlZPof5ZO30uKOs25ju7Ng='); /* Replace with your image URL */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+        }
+        .container {
+            width: 50%;
+            margin: 50px auto;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(55, 240, 31, 0.592);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .add-task {
+            margin: 20px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        input[type="button"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="button"]:hover {
+            background-color: #45a049;
+        }
+        .action-btn {
+            margin: 0 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .edit-btn {
+            background-color: #f0ad4e;
+        }
+        .delete-btn {
+            background-color: #d9534f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>To-Do List with JavaScript</h2>
+        <div class="add-task">
+            <input type="text" id="taskInput" placeholder="Enter new task">
+            <input type="button" value="Add Task" onclick="addTask()">
+        </div>
+        <table id="todoTable">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Task</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Tasks will be added here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        let tasks = [];  // Store tasks here in an array
+
+        function addTask() {
+            let taskInput = document.getElementById("taskInput").value;
+            if (taskInput.trim() === "") {
+                alert("Please enter a task");
+                return;
+            }
+
+            const taskObj = {
+                id: new Date().getTime(), // unique ID for each task
+                name: taskInput
+            };
+
+            tasks.push(taskObj);
+            updateTable();
+            document.getElementById("taskInput").value = "";  // Clear input
+        }
+
+        function updateTable() {
+            const tableBody = document.getElementById("todoTable").getElementsByTagName("tbody")[0];
+            tableBody.innerHTML = '';  // Clear current table content
+
+            tasks.forEach((task, index) => {
+                let newRow = tableBody.insertRow();
+
+                let cell1 = newRow.insertCell(0);
+                let cell2 = newRow.insertCell(1);
+                let cell3 = newRow.insertCell(2);
+
+                cell1.innerHTML = index + 1;
+                cell2.innerHTML = `<span id="taskName-${task.id}">${task.name}</span>`;
+                cell3.innerHTML = `
+                    <button class="action-btn edit-btn" onclick="editTask(${task.id})">Edit</button>
+                    <button class="action-btn delete-btn" onclick="deleteTask(${task.id})">Delete</button>
+                `;
+            });
+        }
+
+        function deleteTask(taskId) {
+            tasks = tasks.filter(task => task.id !== taskId);  // Remove task with matching ID
+            updateTable();
+        }
+
+        function editTask(taskId) {
+            const taskNameSpan = document.getElementById(`taskName-${taskId}`);
+            const newTaskName = prompt("Edit Task", taskNameSpan.innerText);
+
+            if (newTaskName && newTaskName.trim() !== "") {
+                tasks = tasks.map(task => {
+                    if (task.id === taskId) {
+                        return { ...task, name: newTaskName };  // Update task with new name
+                    }
+                    return task;
+                });
+                updateTable();
+            }
+        }
+    </script>
+</body>
+</html>
